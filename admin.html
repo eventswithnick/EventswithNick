@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Events with Nick | Owner Portal</title>
+  <link rel="icon" href="assets/img/favicon.png" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Cinzel:wght@500;600;700;800&family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="assets/css/admin.css" />
+</head>
+<body>
+  <section class="login-screen" id="loginScreen">
+    <div class="login-card">
+      <img src="assets/img/logo.png" alt="Events with Nick logo" />
+      <p class="eyebrow">Secure owner access</p>
+      <h1>Events with Nick Portal</h1>
+      <p>Manage bookings, quotations, prices, banking details, website details and gallery content through a secured Supabase admin account.</p>
+      <form id="loginForm">
+        <label id="emailField">Admin email<input type="email" id="emailInput" placeholder="owner@example.com" autocomplete="username" /></label>
+        <label>Password<input type="password" id="passwordInput" placeholder="Enter admin password" autocomplete="current-password" required /></label>
+        <button class="btn btn-gold" type="submit" id="loginSubmitBtn">Open Secure Portal</button>
+        <p class="error" id="loginError"></p>
+      </form>
+      <small id="loginModeNote">Live mode uses Supabase Auth. Local mode can still use the presentation password for offline testing.</small>
+    </div>
+  </section>
+
+  <main class="dashboard hidden" id="dashboard">
+    <aside class="sidebar">
+      <div class="brand">
+        <img src="assets/img/logo.png" alt="Events with Nick logo" />
+        <div><strong>Events with Nick</strong><span>Owner Portal</span></div>
+      </div>
+      <nav class="side-nav">
+        <button class="nav-btn active" data-tab="overview">Overview</button>
+        <button class="nav-btn" data-tab="bookings">Bookings</button>
+        <button class="nav-btn" data-tab="quote">Quote Builder</button>
+        <button class="nav-btn" data-tab="pricing">Price Settings</button>
+        <button class="nav-btn" data-tab="banking">Banking Details</button>
+        <button class="nav-btn" data-tab="content">Website Details</button>
+        <button class="nav-btn" data-tab="gallery">Gallery</button>
+        <button class="nav-btn" data-tab="backup">Backup & Go Live</button>
+      </nav>
+      <a class="site-link" href="index.html">View Website</a>
+      <button class="logout" id="logoutBtn">Logout</button>
+    </aside>
+
+    <section class="main-panel">
+      <header class="admin-header">
+        <div>
+          <p class="eyebrow">Dashboard</p>
+          <h1 id="panelTitle">Overview</h1>
+        </div>
+        <div class="header-actions">
+          <span class="mode-pill" id="connectionStatus">Secure mode pending</span>
+          <button class="btn btn-outline" id="exportCsvBtn">Export CSV</button>
+        </div>
+      </header>
+
+      <section class="tab-panel active" id="overview">
+        <div class="metric-grid" id="metrics"></div>
+        <div class="two-column">
+          <div class="card">
+            <div class="card-head"><h2>Recent booking requests</h2><button class="btn small" data-tab-jump="bookings">View all</button></div>
+            <div class="booking-list" id="recentBookings"></div>
+          </div>
+          <div class="card">
+            <h2>Business pipeline</h2>
+            <div class="pipeline" id="pipeline"></div>
+          </div>
+        </div>
+      </section>
+
+      <section class="tab-panel" id="bookings">
+        <div class="tools-row">
+          <input id="bookingSearch" placeholder="Search by name, phone, event type or location" />
+          <select id="statusFilter">
+            <option value="All">All statuses</option>
+            <option>New</option><option>Contacted</option><option>Quoted</option><option>Confirmed</option><option>Completed</option><option>Cancelled</option>
+          </select>
+          <button class="btn btn-gold" id="addBookingBtn">Add booking</button>
+        </div>
+        <div class="table-wrap">
+          <table>
+            <thead><tr><th>Client</th><th>Event</th><th>Date</th><th>Guests</th><th>Status</th><th>Quote</th><th>Actions</th></tr></thead>
+            <tbody id="bookingTable"></tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="tab-panel" id="quote">
+        <div class="two-column">
+          <form class="card form-card" id="quoteForm">
+            <h2>Quick quotation builder</h2>
+            <p>Prices come from <strong>Price Settings</strong>. Adjust the prices there once, then the quote builder calculates with those amounts.</p>
+            <label>Save quote to booking<select name="bookingId" id="quoteBookingSelect"><option value="">Do not attach to a booking</option></select></label>
+            <label>Client name<input name="client" placeholder="Client full name" required /></label>
+            <div class="form-row">
+              <label>Client phone<input name="phone" placeholder="e.g. 076 000 0000" /></label>
+              <label>Client email<input name="email" type="email" placeholder="name@example.com" /></label>
+            </div>
+            <div class="form-row">
+              <label>Preferred communication<select name="preferredCommunication"><option>WhatsApp</option><option>Phone Call</option><option>Email</option></select></label>
+              <label>Event date<input name="eventDate" type="date" /></label>
+            </div>
+            <label>Event type<select name="eventType"><option>Wedding</option><option>Corporate Event</option><option>Birthday Celebration</option><option>Gala Dinner</option><option>Special Event</option></select></label>
+            <div class="form-row">
+              <label>Event location<input name="location" placeholder="Venue, town or area" /></label>
+              <label>Preferred package<input name="package" placeholder="Signature Experience" /></label>
+            </div>
+            <div class="form-row">
+              <label>Guests<input name="guests" type="number" value="100" min="1" required /></label>
+              <label>Budget range<input name="budget" placeholder="e.g. R25 000 - R40 000" /></label>
+            </div>
+            <label>Client booking message<textarea name="clientMessage" rows="3" placeholder="Original booking request, colours, services needed, etc."></textarea></label>
+            <div class="form-row">
+              <label>Service level<select name="level" id="serviceLevelSelect"></select></label>
+              <label>Decor level<select name="decor" id="decorLevelSelect"></select></label>
+            </div>
+            <label>Catering support<select name="catering" id="cateringSelect"></select></label>
+            <div class="form-row">
+              <label>Custom discount / adjustment<input name="adjustment" type="number" value="0" placeholder="e.g. -500 or 1500" /></label>
+              <label>Deposit required<input name="deposit" type="number" value="0" placeholder="optional" /></label>
+            </div>
+            <label>Extra notes<textarea name="notes" rows="4" placeholder="Special requests, travel, venue details, etc."></textarea></label>
+            <button class="btn btn-gold" type="submit">Generate Quote Preview</button>
+          </form>
+          <div class="card quote-preview" id="quotePreview">
+            <h2>Quote preview</h2>
+            <p>Fill in the form to generate a professional quotation summary.</p>
+          </div>
+        </div>
+      </section>
+
+      <section class="tab-panel" id="pricing">
+        <div class="card form-card">
+          <h2>Price settings</h2>
+          <p>These are the amounts used by the quote builder. Edit them here, save, and the quote builder updates immediately.</p>
+          <form id="pricingForm" class="pricing-form"></form>
+          <div class="stack-actions inline-actions">
+            <button class="btn btn-gold" id="savePricingBtn">Save Price Settings</button>
+            <button class="btn btn-outline" id="resetPricingBtn">Reset Default Prices</button>
+          </div>
+          <p class="success" id="pricingSaved"></p>
+        </div>
+      </section>
+
+      <section class="tab-panel" id="banking">
+        <form class="card form-card" id="bankingForm">
+          <h2>Banking details</h2>
+          <p>These details are used in quote text and quote PDF downloads. Keep them empty until Nick confirms the official business bank account.</p>
+          <div class="form-row"><label>Account holder<input name="accountName" /></label><label>Bank name<input name="bankName" placeholder="e.g. FNB / Capitec / Standard Bank" /></label></div>
+          <div class="form-row"><label>Account number<input name="accountNumber" /></label><label>Account type<input name="accountType" /></label></div>
+          <div class="form-row"><label>Branch code<input name="branchCode" /></label><label>Payment reference instruction<input name="referenceFormat" /></label></div>
+          <label>Payment note<textarea name="paymentNote" rows="4"></textarea></label>
+          <button class="btn btn-gold" type="submit">Save Banking Details</button>
+          <p class="success" id="bankingSaved"></p>
+        </form>
+      </section>
+
+      <section class="tab-panel" id="content">
+        <form class="card form-card" id="settingsForm">
+          <h2>Website details manager</h2>
+          <p>Edit business information that appears on the public website.</p>
+          <div class="form-row"><label>Business name<input name="name" /></label><label>Legal name<input name="legal" /></label></div>
+          <div class="form-row"><label>Registration number<input name="registrationNumber" placeholder="Optional company registration number" /></label><label>VAT number<input name="vatNumber" placeholder="Optional VAT number" /></label></div>
+          <label>Business address<input name="businessAddress" /></label>
+          <label>Hero title<input name="heroTitle" /></label>
+          <label>Hero text<textarea name="heroText" rows="4"></textarea></label>
+          <label>About text<textarea name="aboutText" rows="4"></textarea></label>
+          <label>Slogan<textarea name="slogan" rows="3"></textarea></label>
+          <label>Tagline<input name="tagline" /></label>
+          <div class="form-row"><label>Location<input name="location" /></label><label>Service area<input name="serviceArea" /></label></div>
+          <div class="form-row"><label>Phone 1<input name="phone1" /></label><label>Phone 2<input name="phone2" /></label></div>
+          <div class="form-row"><label>Email<input name="email" /></label><label>WhatsApp number<input name="whatsapp" /></label></div>
+          <div class="form-row"><label>Facebook<input name="facebook" /></label><label>Instagram<input name="instagram" /></label></div>
+          <button class="btn btn-gold" type="submit">Save Website Details</button>
+          <p class="success" id="settingsSaved"></p>
+        </form>
+      </section>
+
+      <section class="tab-panel" id="gallery">
+        <div class="card form-card">
+          <h2>Gallery manager</h2>
+          <p>Add clear event inspiration images. Replace with Nick’s own portfolio pictures when ready.</p>
+          <form id="galleryForm" class="gallery-form">
+            <div class="form-row"><label>Image title<input name="title" required /></label><label>Category<input name="category" required /></label></div>
+            <label>Image URL<input name="image" placeholder="https://images.unsplash.com/..." required /></label>
+            <button class="btn btn-gold" type="submit">Add Gallery Image</button>
+          </form>
+        </div>
+        <div class="admin-gallery" id="adminGallery"></div>
+      </section>
+
+      <section class="tab-panel" id="backup">
+        <div class="card form-card">
+          <h2>Export and backup</h2>
+          <p>Download booking records and business data for offline safekeeping.</p>
+          <div class="stack-actions">
+            <button class="btn btn-gold" id="downloadBookingsPdfBtn">Download Bookings PDF Report</button>
+            <button class="btn btn-outline" id="downloadJsonBtn">Download Full JSON Backup</button>
+            <button class="btn btn-outline" id="resetDemoBtn">Reset Local Presentation Data</button>
+          </div>
+          <p class="backup-note">Save exported files on Nick’s computer after major booking updates.</p>
+        </div>
+      </section>
+    </section>
+  </main>
+
+  <div class="modal hidden" id="bookingModal">
+    <div class="modal-card">
+      <button class="modal-close" id="closeModal">×</button>
+      <div id="modalContent"></div>
+    </div>
+  </div>
+
+  <script src="assets/js/site-config.js"></script>
+  <script src="assets/js/backend-config.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+  <script src="assets/js/admin.js"></script>
+</body>
+</html>
