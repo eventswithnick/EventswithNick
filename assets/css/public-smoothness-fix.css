@@ -1,0 +1,185 @@
+/* Events with Nick v7.8 - Public website smoothness layer
+   Safe drop-in: improves perceived speed and mobile scrolling without changing core data logic. */
+
+html {
+  scroll-behavior: smooth;
+  -webkit-text-size-adjust: 100%;
+}
+
+body {
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+img,
+video,
+canvas,
+svg {
+  max-width: 100%;
+}
+
+img {
+  height: auto;
+}
+
+/* Prevent heavy lower-page sections from painting before they are near the screen. */
+.section,
+.stats,
+.footer,
+.gallery-section,
+.packages-section,
+.process-section,
+.testimonials-section,
+.booking-section {
+  content-visibility: auto;
+  contain-intrinsic-size: 1px 760px;
+}
+
+.hero,
+.site-header,
+.top-strip {
+  content-visibility: visible;
+}
+
+/* Helps the browser keep fixed elements smoother during scroll. */
+.site-header,
+.floating-wa,
+.ewn-progress-bar,
+.ewn-system-status,
+.ewn-slow-note {
+  transform: translateZ(0);
+  backface-visibility: hidden;
+}
+
+/* Keep image cards from causing layout jumps while images load. */
+.gallery-grid img,
+.service-grid img,
+.package-grid img,
+.about-showcase img,
+.footer img,
+.hero-logo-ring img,
+.brand img {
+  display: block;
+}
+
+.gallery-grid img,
+.gallery-item img,
+.ewn-gallery-card img {
+  aspect-ratio: 4 / 3;
+  object-fit: cover;
+  background: rgba(255, 255, 255, 0.04);
+}
+
+/* While the public gallery is still fetching, show a calm placeholder instead of a blank gap. */
+.gallery-grid.ewn-gallery-waiting {
+  min-height: 240px;
+  position: relative;
+}
+
+.gallery-grid.ewn-gallery-waiting::before {
+  content: 'Loading gallery...';
+  display: grid;
+  place-items: center;
+  min-height: 220px;
+  border: 1px dashed rgba(212, 175, 55, 0.35);
+  border-radius: 22px;
+  color: rgba(255, 247, 220, 0.8);
+  background: rgba(20, 15, 8, 0.44);
+}
+
+/* Phones need less motion and less GPU pressure. This keeps the premium look, but removes the laggy parts. */
+html.ewn-fast-mode .ambient {
+  display: none !important;
+}
+
+html.ewn-fast-mode .tilt-card,
+html.ewn-fast-mode .reveal,
+html.ewn-fast-mode .delay-1,
+html.ewn-fast-mode .delay-2,
+html.ewn-fast-mode .delay-3,
+html.ewn-fast-mode .stat-card,
+html.ewn-fast-mode .service-card,
+html.ewn-fast-mode .process-card,
+html.ewn-fast-mode .package-card,
+html.ewn-fast-mode .gallery-item {
+  transition-duration: 0.16s !important;
+  animation-duration: 0.16s !important;
+  transform: none !important;
+}
+
+html.ewn-fast-mode .reveal {
+  opacity: 1 !important;
+}
+
+html.ewn-fast-mode .tilt-card {
+  will-change: auto !important;
+}
+
+html.ewn-fast-mode .hero-card,
+html.ewn-fast-mode .about-showcase,
+html.ewn-fast-mode .feature-photo,
+html.ewn-fast-mode .showcase-main {
+  box-shadow: 0 12px 28px rgba(0,0,0,0.28) !important;
+}
+
+html.ewn-fast-mode * {
+  scroll-margin-top: 90px;
+}
+
+@media (max-width: 860px), (hover: none) and (pointer: coarse) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  .section,
+  .stats,
+  .footer,
+  .gallery-section,
+  .packages-section,
+  .process-section,
+  .testimonials-section,
+  .booking-section {
+    contain-intrinsic-size: 1px 680px;
+  }
+
+  .ambient {
+    display: none !important;
+  }
+
+  .tilt-card,
+  .reveal,
+  .delay-1,
+  .delay-2,
+  .delay-3 {
+    transform: none !important;
+    transition-duration: 0.18s !important;
+  }
+
+  .reveal {
+    opacity: 1 !important;
+  }
+
+  .hero,
+  .section {
+    overflow-x: hidden;
+  }
+
+  button,
+  a,
+  input,
+  select,
+  textarea {
+    touch-action: manipulation;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    scroll-behavior: auto !important;
+    transition-duration: 0.01ms !important;
+  }
+}

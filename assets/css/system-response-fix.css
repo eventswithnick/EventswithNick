@@ -1,0 +1,175 @@
+/* Events with Nick v7.7 - system-wide response and loading feedback
+   Non-invasive layer: only visual feedback; it does not change saving/loading logic. */
+:root {
+  --ewn-response-bg: rgba(12, 9, 4, 0.94);
+  --ewn-response-border: rgba(212, 175, 55, 0.45);
+  --ewn-response-gold: #d4af37;
+  --ewn-response-text: #fff7dc;
+  --ewn-response-muted: rgba(255, 247, 220, 0.78);
+}
+
+.ewn-progress-bar {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 0%;
+  height: 4px;
+  z-index: 999999;
+  background: linear-gradient(90deg, var(--ewn-response-gold), #fff2a8, var(--ewn-response-gold));
+  box-shadow: 0 0 18px rgba(212, 175, 55, 0.65);
+  opacity: 0;
+  pointer-events: none;
+  transition: width 0.22s ease, opacity 0.18s ease;
+}
+
+.ewn-progress-bar.is-visible {
+  opacity: 1;
+  animation: ewn-progress-pulse 1.2s ease-in-out infinite;
+}
+
+.ewn-system-status {
+  position: fixed;
+  right: max(14px, env(safe-area-inset-right));
+  bottom: max(14px, env(safe-area-inset-bottom));
+  z-index: 999998;
+  display: flex;
+  align-items: center;
+  gap: 11px;
+  max-width: min(430px, calc(100vw - 28px));
+  padding: 13px 15px;
+  color: var(--ewn-response-text);
+  background: var(--ewn-response-bg);
+  border: 1px solid var(--ewn-response-border);
+  border-radius: 18px;
+  box-shadow: 0 18px 50px rgba(0, 0, 0, 0.38);
+  opacity: 0;
+  transform: translateY(16px);
+  pointer-events: none;
+  transition: opacity 0.18s ease, transform 0.18s ease;
+}
+
+.ewn-system-status.is-visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+.ewn-system-status.is-soft {
+  opacity: 0.94;
+}
+
+.ewn-system-status__spinner {
+  width: 20px;
+  height: 20px;
+  flex: 0 0 20px;
+  border-radius: 999px;
+  border: 3px solid rgba(255, 255, 255, 0.25);
+  border-top-color: var(--ewn-response-gold);
+  animation: ewn-spin 0.8s linear infinite;
+}
+
+.ewn-system-status__text {
+  display: grid;
+  gap: 2px;
+  min-width: 0;
+}
+
+.ewn-system-status__title {
+  font: 800 0.91rem/1.2 Inter, Arial, sans-serif;
+  letter-spacing: 0.01em;
+}
+
+.ewn-system-status__hint {
+  color: var(--ewn-response-muted);
+  font: 600 0.78rem/1.25 Inter, Arial, sans-serif;
+}
+
+.ewn-btn-working {
+  position: relative !important;
+  cursor: wait !important;
+  opacity: 0.82 !important;
+}
+
+.ewn-btn-working::after {
+  content: "";
+  display: inline-block;
+  width: 0.95em;
+  height: 0.95em;
+  margin-left: 0.55em;
+  vertical-align: -0.15em;
+  border-radius: 999px;
+  border: 2px solid currentColor;
+  border-right-color: transparent;
+  animation: ewn-spin 0.75s linear infinite;
+}
+
+.ewn-form-working,
+.ewn-panel-working {
+  position: relative;
+}
+
+.ewn-form-working::before,
+.ewn-panel-working::before {
+  content: "";
+  position: absolute;
+  inset: 0;
+  z-index: 20;
+  border-radius: inherit;
+  background: rgba(255, 255, 255, 0.02);
+  pointer-events: none;
+}
+
+.ewn-slow-note {
+  position: fixed;
+  left: 50%;
+  bottom: max(84px, calc(env(safe-area-inset-bottom) + 84px));
+  z-index: 999997;
+  transform: translateX(-50%);
+  max-width: min(460px, calc(100vw - 28px));
+  padding: 9px 13px;
+  color: var(--ewn-response-muted);
+  background: rgba(12, 9, 4, 0.86);
+  border: 1px solid rgba(212, 175, 55, 0.28);
+  border-radius: 999px;
+  font: 700 0.78rem/1.25 Inter, Arial, sans-serif;
+  text-align: center;
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity 0.2s ease;
+}
+
+.ewn-slow-note.is-visible {
+  opacity: 1;
+}
+
+@media (max-width: 720px) {
+  .ewn-system-status {
+    left: 12px;
+    right: 12px;
+    bottom: max(12px, env(safe-area-inset-bottom));
+    max-width: none;
+    border-radius: 16px;
+    padding: 12px 13px;
+  }
+
+  .ewn-system-status__title {
+    font-size: 0.86rem;
+  }
+
+  .ewn-system-status__hint {
+    font-size: 0.74rem;
+  }
+
+  .ewn-slow-note {
+    bottom: max(78px, calc(env(safe-area-inset-bottom) + 78px));
+    border-radius: 16px;
+  }
+}
+
+@keyframes ewn-spin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes ewn-progress-pulse {
+  0%, 100% { filter: brightness(1); }
+  50% { filter: brightness(1.35); }
+}
